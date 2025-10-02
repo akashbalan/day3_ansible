@@ -41,7 +41,7 @@ resource "aws_route" "peering-from-ansible-vpc" {
 
 #note only public subnets are able to connect but its able to connect to both pvt and public subnets
 
-resource "aws_route" "peering-to-ansible-vpc" {
+resource "aws_route" "peering-to-ansible-vpc-pvtrt" {
   route_table_id            = aws_route_table.terraform-private.id #from client
   destination_cidr_block    = "10.0.0.0/16" # to controller
   vpc_peering_connection_id = aws_vpc_peering_connection.ansible-vpc-peering.id #through this connection
