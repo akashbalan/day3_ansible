@@ -1,0 +1,49 @@
+---
+- name: Playbook to install generic tools
+  hosts: pub-pub-ip   # target host/group
+  gather_facts: yes   # collect info about the target (IP, OS, etc.)
+  become: yes         # allow to become root
+  become_user: root   # change to root user
+
+  tasks:
+    - name: Create hello folder
+      command: mkdir hello
+    - name: create a file
+      command: touch file1
+    - name: create a folder method 2
+      file:
+        path: /hello/akash
+        state: directory
+        mode: "0755"
+    - name: create a folder method 2
+      file:
+        path: /hello/akash2
+        state: file
+        mode: "444"
+    - name: Create folder and set permissions
+      command: mkdir /tmp/hello2 && chmod 444 /tmp/hello2
+    - name: copy frile from here to ec2
+      copy:
+        src: ./folder1/hi.txt
+        dest: /akash/hi.txt
+        mode: '444'
+    - name: Install dependencies
+      apt:
+        name:
+          - curl
+          - htop
+        state: present #absent - delete
+        update_cache: yes
+    - name: install git
+      command: apt install git
+    - name: Download tarball from URL
+      get_url:
+        url: https://example.com/app-v1.2.3.tar.gz
+        dest: usr/local/bin/app-v1.2.3.tar.gz
+        mode: '0644'
+    - name: unzip
+      command:  cd usr/local/bin && unzip app-v1.2.3.tar.gz
+    - name : dowwnload from url
+      command: cd usr/local/bin && wget https://example.com/app-v1.2.3.tar.gz && unzip app-v1.2.3.tar.gz
+
+    

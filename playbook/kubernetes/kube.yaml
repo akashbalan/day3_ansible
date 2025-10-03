@@ -1,0 +1,66 @@
+---
+- name: Install kops and kubectl (cd && approach)
+  hosts: pub-pub-ip
+  become: yes
+  become_user: root 
+  tasks:
+
+    - name: Download kops binary
+      shell: cd /usr/local/bin && wget https://github.com/kubernetes/kops/releases/download/v1.33.0/kops-linux-amd64 -O kops
+
+    - name: Make kops executable
+      shell: cd /usr/local/bin && chmod 777 kops
+
+    - name: Download kubectl binary
+      shell: cd /usr/local/bin && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+    - name: Make kubectl executable
+      shell: cd /usr/local/bin && chmod 777 kubectl
+
+
+---
+- name: Install kops and kubectl (chdir approach)
+  hosts: pvt-pvt-ip
+  become: yes
+  become_user: root
+  tasks:
+
+    - name: Download kops binary
+      shell: wget https://github.com/kubernetes/kops/releases/download/v1.33.0/kops-linux-amd64 -O kops
+      args:
+        chdir: /usr/local/bin
+
+    - name: Make kops executable
+      shell: chmod 755 kops
+      args:
+        chdir: /usr/local/bin
+
+    - name: Download kubectl binary
+      shell: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      args:
+        chdir: /usr/local/bin
+
+    - name: Make kubectl executable
+      shell: chmod 755 kubectl
+      args:
+        chdir: /usr/local/bin
+
+
+# ---
+# - name: Install kops and kubectl binaries
+#   hosts: all
+#   become: true
+#   tasks:
+
+#     - name: Download kops binary
+#       get_url:
+#         url: "https://github.com/kubernetes/kops/releases/download/v1.33.0/kops-linux-amd64"
+#         dest: /usr/local/bin/kops
+#         mode: '777'
+
+#     - name: Download kubectl binary
+#       get_url:
+#         url: "https://dl.k8s.io/release/{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}/bin/linux/amd64/kubectl"
+#         dest: /usr/local/bin/kubectl
+#         mode: '777'
+
